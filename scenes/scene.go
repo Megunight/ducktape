@@ -7,4 +7,7 @@ type Scene interface {
     Update()
     Render(screen *ebiten.Image)
     HandleInput()
+
+	OnEnterScene()
+	OnLeaveScene()
 }

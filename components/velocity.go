@@ -5,9 +5,9 @@ import (
 	"github.com/yohamta/donburi/features/math"
 )
 
-type Velocity struct {
+type VelocityData struct {
 	PosVelocity math.Vec2
 	RotVelocity float64
 }
 
-var Velocities = donburi.NewComponentType[Velocity]()
+var Velocity = donburi.NewComponentType[VelocityData]()

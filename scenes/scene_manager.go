@@ -48,7 +48,9 @@ func (sm *SceneManager) SwitchSceneByName(str string) {
         fmt.Println("[Error] SceneManager tried switching to an invalid scene: " + str)
         return
     }
+	sm.currScene.OnLeaveScene()
     sm.currScene = sm.scenes[str]
+	sm.currScene.OnEnterScene()
 }
 
 func (sm *SceneManager) SwitchScene(scene Scene) {
@@ -60,7 +62,9 @@ func (sm *SceneManager) SwitchScene(scene Scene) {
         fmt.Println("[Error] SceneManager tried switching to an invalid scene: " + scene.GetName())
         return
     }
+	sm.currScene.OnLeaveScene()
     sm.currScene = sm.scenes[scene.GetName()]
+	sm.currScene.OnEnterScene()
 }
 
 func (sm *SceneManager) ShouldQuit() bool {

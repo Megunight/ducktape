@@ -5,10 +5,10 @@ import (
 	"github.com/yohamta/donburi/features/math"
 )
 
-type Transform struct {
+type TransformData struct {
 	Pos math.Vec2
 	Rot float64
 }
 
-var Transforms = donburi.NewComponentType[Transform]()
+var Transform = donburi.NewComponentType[TransformData]()
 

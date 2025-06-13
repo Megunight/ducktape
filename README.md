@@ -15,3 +15,7 @@ Making a simple side scrolling game with a game engine that feels like ducktape.
 - [ ] Audio manager
 - [ ] UI system
 - [ ] Camera system.
+
+### Architecture:
+Planned architecture
+![image](./docs/architecture.png)

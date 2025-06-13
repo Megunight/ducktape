@@ -17,9 +17,19 @@ func (m *MainMenuScene) Update() {
 }
 
 func (m *MainMenuScene) Render(screen *ebiten.Image) {
+	// TODO: Add main menu UI.
 	ebitenutil.DebugPrint(screen, "Hello World")
 }
+
 func (m *MainMenuScene) HandleInput() {
+
+}
+
+func (m *MainMenuScene) OnEnterScene() {
+
+}
+
+func (m *MainMenuScene) OnLeaveScene() {
 
 }
 
