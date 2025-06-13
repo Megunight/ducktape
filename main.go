@@ -3,21 +3,21 @@ package main
 import (
 	"log"
 
-	"github.com/BrianAnakPintar/ducktape/SceneManager"
+	"github.com/BrianAnakPintar/ducktape/scenes"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Game struct{}
 
 func (g *Game) Update() error {
-	currScene := scenemanager.GetInstance().GetCurrScene()
+	currScene := scenes.GetSceneManager().GetCurrScene()
 	currScene.HandleInput()
 	currScene.Update()
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	scenemanager.GetInstance().GetCurrScene().Render(screen)
+	scenes.GetSceneManager().GetCurrScene().Render(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -25,17 +25,24 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func InitializeScenes() {
-	mm := scenemanager.NewMainMenu()
-	scenemanager.GetInstance().RegisterScene(&mm)
+	mm := scenes.NewMainMenu()
+	tl := scenes.NewTestLevelScene(1)
+
+	availableScenes := [...]scenes.Scene{&mm, &tl}
+
+	for _, scene := range availableScenes {
+		scenes.GetSceneManager().RegisterScene(scene)
+	}
 }
 
 func main() {
 	InitializeScenes()
-	scenemanager.GetInstance().SwitchSceneByName("MainMenu")
+	scenes.GetSceneManager().SwitchSceneByName("TestLevel")
 
 	ebiten.SetWindowSize(1000, 480)
-	ebiten.SetWindowTitle("Circuit Game!")
+	ebiten.SetWindowTitle("Ducktaped Game")
 	if err := ebiten.RunGame(&Game{}); err != nil {
 		log.Fatal(err)
 	}
 }
+
