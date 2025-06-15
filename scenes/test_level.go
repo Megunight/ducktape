@@ -1,19 +1,18 @@
 package scenes
 
 import (
-	"github.com/BrianAnakPintar/ducktape/assets"
+	"github.com/BrianAnakPintar/ducktape/archetypes"
 	"github.com/BrianAnakPintar/ducktape/components"
 	c "github.com/BrianAnakPintar/ducktape/constants"
 	"github.com/BrianAnakPintar/ducktape/systems"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
+	"github.com/yohamta/donburi/filter"
 )
 
 type TestLevelScene struct {
 	NumEnemies int
-	text  string
 	world donburi.World
 
 	animSystem systems.AnimationSystem
@@ -29,22 +28,25 @@ func (t *TestLevelScene) Update() {
 }
 
 func (t *TestLevelScene) Render(screen *ebiten.Image) {
-	ebitenutil.DebugPrint(screen, t.text)
 	t.renderSystem.Draw(t.world, screen)
 }
 
 func (t *TestLevelScene) HandleInput() {
-	if ebiten.IsKeyPressed(c.SkipCutsceneKey) {	
-		t.text = "Brian is goated"
+	if ebiten.IsKeyPressed(c.MoveLeftKey) {	
+		query := donburi.NewQuery(filter.Contains(components.Player, components.Transform, components.Sprite))
+		if entry, ok := query.First(t.world); ok {
+			components.Transform.Get(entry).Pos.X -= 1
+		}
+	} else if ebiten.IsKeyPressed(c.MoveRightKey) {
+		query := donburi.NewQuery(filter.Contains(components.Player, components.Transform, components.Sprite))
+		if entry, ok := query.First(t.world); ok {
+			components.Transform.Get(entry).Pos.X += 1
+		}
 	}
 }
 
 func (t *TestLevelScene) OnEnterScene() {
-	playerEntity := t.world.Create(components.Transform, components.Player, components.Velocity, components.Sprite)
-	entry := t.world.Entry(playerEntity)
-
-	components.Transform.SetValue(entry, components.TransformData{Pos: math.NewVec2(0,0), Rot: 0})
-	components.Sprite.SetValue(entry, components.SpriteData{Image: assets.PlayerAsset0})
+	archetypes.NewPlayer(t.world, math.NewVec2(0,10))
 }
 
 func (m *TestLevelScene) OnLeaveScene() {
@@ -54,7 +56,6 @@ func (m *TestLevelScene) OnLeaveScene() {
 func NewTestLevelScene(numEnemies int) TestLevelScene {
 	return TestLevelScene{
 		NumEnemies: numEnemies,
-		text: "Hi there",
 		world: donburi.NewWorld(),
 		animSystem: *systems.NewAnimationSystem(),
 		renderSystem: *systems.NewRenderSystem(),
