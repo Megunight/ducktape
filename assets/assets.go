@@ -8,7 +8,12 @@ import (
 )
 
 var (
-	PlayerAsset = LoadAsset("")
+	PlayerAsset0 *ebiten.Image = LoadAsset("assets/characters/player/player_idle00.png")
+	PlayerAsset1 = LoadAsset("assets/characters/player/player_idle01.png")
+	PlayerAsset2 = LoadAsset("assets/characters/player/player_idle02.png")
+	PlayerAsset3 = LoadAsset("assets/characters/player/player_idle03.png")
+	PlayerAsset4 = LoadAsset("assets/characters/player/player_idle04.png")
+	PlayerAsset5 = LoadAsset("assets/characters/player/player_idle05.png")
 )
 
 func LoadAsset(path string) *ebiten.Image {

@@ -48,7 +48,9 @@ func (sm *SceneManager) SwitchSceneByName(str string) {
         fmt.Println("[Error] SceneManager tried switching to an invalid scene: " + str)
         return
     }
-	sm.currScene.OnLeaveScene()
+	if sm.currScene != nil {	
+		sm.currScene.OnLeaveScene()
+	}
     sm.currScene = sm.scenes[str]
 	sm.currScene.OnEnterScene()
 }
