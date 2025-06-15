@@ -39,7 +39,7 @@ func main() {
 	InitializeScenes()
 	scenes.GetSceneManager().SwitchSceneByName("TestLevel")
 
-	ebiten.SetWindowSize(1000, 480)
+	ebiten.SetWindowSize(640, 480)
 	ebiten.SetWindowTitle("Ducktaped Game")
 	if err := ebiten.RunGame(&Game{}); err != nil {
 		log.Fatal(err)

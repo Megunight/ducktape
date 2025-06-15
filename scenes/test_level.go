@@ -1,6 +1,8 @@
 package scenes
 
 import (
+	"image/color"
+
 	"github.com/BrianAnakPintar/ducktape/archetypes"
 	"github.com/BrianAnakPintar/ducktape/components"
 	c "github.com/BrianAnakPintar/ducktape/constants"
@@ -17,6 +19,10 @@ type TestLevelScene struct {
 
 	animSystem systems.AnimationSystem
 	renderSystem systems.RenderSystem
+	physicsSystem systems.PhysicsSystem
+	gravitySystem systems.GravitySystem
+
+	playerQuery donburi.Query
 }
 
 func (t *TestLevelScene) GetName() string {
@@ -25,31 +31,24 @@ func (t *TestLevelScene) GetName() string {
 
 func (t *TestLevelScene) Update() {
 	t.animSystem.Update(t.world)
+	t.gravitySystem.Update(t.world)
+	t.physicsSystem.Update(t.world)
 }
 
 func (t *TestLevelScene) Render(screen *ebiten.Image) {
+	screen.Fill(color.White)
 	t.renderSystem.Draw(t.world, screen)
 }
 
 func (t *TestLevelScene) HandleInput() {
-	if ebiten.IsKeyPressed(c.MoveLeftKey) {	
-		query := donburi.NewQuery(filter.Contains(components.Player, components.Transform, components.Sprite))
-		if entry, ok := query.First(t.world); ok {
-			components.Transform.Get(entry).Pos.X -= 1
-		}
-	} else if ebiten.IsKeyPressed(c.MoveRightKey) {
-		query := donburi.NewQuery(filter.Contains(components.Player, components.Transform, components.Sprite))
-		if entry, ok := query.First(t.world); ok {
-			components.Transform.Get(entry).Pos.X += 1
-		}
-	}
+	t.HandlePlayerMovement()
 }
 
 func (t *TestLevelScene) OnEnterScene() {
-	archetypes.NewPlayer(t.world, math.NewVec2(0,10))
+	archetypes.NewPlayer(t.world, math.NewVec2(0,100))
 }
 
-func (m *TestLevelScene) OnLeaveScene() {
+func (t *TestLevelScene) OnLeaveScene() {
 
 }
 
@@ -59,6 +58,35 @@ func NewTestLevelScene(numEnemies int) TestLevelScene {
 		world: donburi.NewWorld(),
 		animSystem: *systems.NewAnimationSystem(),
 		renderSystem: *systems.NewRenderSystem(),
+		physicsSystem: *systems.NewPhysicsSystem(),
+		gravitySystem: *systems.NewGravitySystem(),
+		playerQuery: *donburi.NewQuery(filter.Contains(components.Player, components.Velocity, components.Transform)),
 	}
 }
 
+func (t *TestLevelScene) HandlePlayerMovement() {
+	entry, ok := t.playerQuery.First(t.world)
+	if !ok {
+		return
+	}
+
+	velocity := components.Velocity.Get(entry)
+
+	const moveSpeed = 5.0
+	velocity.PosVelocity.X = 0
+
+	if ebiten.IsKeyPressed(c.MoveLeftKey) {
+		velocity.PosVelocity.X = -moveSpeed
+	}
+	if ebiten.IsKeyPressed(c.MoveRightKey) {
+		velocity.PosVelocity.X = moveSpeed
+	}
+
+	if ebiten.IsKeyPressed(c.JumpKey) {
+		if components.Jump.Get(entry).JumpsLeft > 0 {
+			const jumpVelocity = -c.JumpForce
+			velocity.PosVelocity.Y = jumpVelocity
+			components.Jump.Get(entry).JumpsLeft -= 1
+		}
+	}
+}

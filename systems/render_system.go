@@ -24,6 +24,7 @@ func (a *RenderSystem) Draw(world donburi.World, screen *ebiten.Image)  {
 		transformData := components.Transform.Get(entry)
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(transformData.Pos.X, transformData.Pos.Y)
+		op.GeoM.Rotate(transformData.Rot)
 
 		screen.DrawImage(spriteData.Image, op)
 	}
