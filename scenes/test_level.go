@@ -76,10 +76,10 @@ func (t *TestLevelScene) HandlePlayerMovement() {
 	velocity.PosVelocity.X = 0
 
 	if ebiten.IsKeyPressed(c.MoveLeftKey) {
-		velocity.PosVelocity.X = -moveSpeed
+		velocity.PosVelocity.X -= moveSpeed
 	}
 	if ebiten.IsKeyPressed(c.MoveRightKey) {
-		velocity.PosVelocity.X = moveSpeed
+		velocity.PosVelocity.X += moveSpeed
 	}
 
 	if ebiten.IsKeyPressed(c.JumpKey) {
