@@ -10,7 +10,6 @@ import (
 	"github.com/BrianAnakPintar/ducktape/systems"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/lafriks/go-tiled"
-	"github.com/solarlune/resolv"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/filter"
@@ -20,7 +19,6 @@ type TestLevelScene struct {
 	NumEnemies int
 	world donburi.World
 	levelMap *tiled.Map
-	space *resolv.Space
 
 	animSystem systems.AnimationSystem
 	renderSystem systems.RenderSystem
@@ -54,21 +52,26 @@ func (t *TestLevelScene) HandleLayer(layer *tiled.Layer) {
 		return
 	}
 
-	if layer.Name == "spawn-locations" {
-		// TODO:
-	} else if layer.Name == "collision" {
-		// TODO:
-	}
-
-	for y := range t.levelMap.Height {
-		for x := range t.levelMap.Width {
-			tile := layer.Tiles[y*t.levelMap.Width + x]
-			if tile == nil {
-				continue
+	if layer.Name == c.PlayerSpawnLayer {
+		for y := range t.levelMap.Height {
+			for x := range t.levelMap.Width {
+				tile := layer.Tiles[y*t.levelMap.Width + x]
+				if tile == nil {
+					continue
+				}
+				archetypes.NewPlayer(t.world, math.NewVec2(0,100))
 			}
-			t.space.Add(resolv.NewRectangle(float64(8*x), float64(8*y), 8, 8))
 		}
-	}
+	} else if layer.Name == c.CollisionLayer {
+		for y := range t.levelMap.Height {
+			for x := range t.levelMap.Width {
+				tile := layer.Tiles[y*t.levelMap.Width + x]
+				if tile == nil {
+					continue
+				}
+			}
+		}
+	}	
 }
 
 func (t *TestLevelScene) LoadMap(path string) {
@@ -77,7 +80,6 @@ func (t *TestLevelScene) LoadMap(path string) {
 		log.Fatalf("Error loading map: %v", err)
 	}
 	t.levelMap = levelMap
-	t.space = resolv.NewSpace(640, 480, 8, 8)
 
 	for _, layer := range t.levelMap.Layers {
 		t.HandleLayer(layer)
@@ -85,8 +87,7 @@ func (t *TestLevelScene) LoadMap(path string) {
 }
 
 func (t *TestLevelScene) OnEnterScene() {
-	t.LoadMap("")
-	archetypes.NewPlayer(t.world, math.NewVec2(0,100))
+	t.LoadMap(c.SpawnMapPath)
 }
 
 func (t *TestLevelScene) OnLeaveScene() {

@@ -31,7 +31,7 @@ func (p *PhysicsSystem) Update(world donburi.World) {
 		transform.Pos.Y += vel.PosVelocity.Y
 
 		rad := degToRad(vel.RotVelocity)
-		transform.Rot = math.Mod(transform.Rot + rad, 2 * math.Pi)
+		transform.Rot = math.Mod(transform.Rot + rad, 2 * math.Pi)	
 	}
 }
 
