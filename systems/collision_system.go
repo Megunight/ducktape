@@ -12,14 +12,21 @@ type CollisionSystem struct {
 	grid *grid.UniformGrid // grid in struct to ensure persistence for static between updates
 }
 
-func NewCollisionSystem(w *donburi.World, g *grid.UniformGrid) *CollisionSystem {
+func NewCollisionSystem() *CollisionSystem {
 	return &CollisionSystem{
 		query: donburi.NewQuery(filter.Contains(components.Transform, components.Collider)),
-		grid: g,
 	}
 }
 
+func (cs *CollisionSystem) SetGrid(g *grid.UniformGrid) {
+	cs.grid = g
+}
+
 func (cs *CollisionSystem) Update(world donburi.World) {
+	if cs.grid == nil {
+		return // no grid, nothing to do
+	}
+
 	// clear bucket full of last frame's dynamic entities to refresh
 	cs.grid.ClearDynamic()
 
@@ -39,5 +46,7 @@ func (cs *CollisionSystem) Update(world donburi.World) {
 			MaxY: t.Pos.Y + c.HalfHeight,
 		}
 		cs.grid.InsertDynamic(int(entry.Id()), aabb)
+
+		// TODO: collision resolution goes here
 	}
 }
