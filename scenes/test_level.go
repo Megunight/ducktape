@@ -65,16 +65,18 @@ func (t *TestLevelScene) HandleLayer(layer *tiled.Layer) {
 				archetypes.NewPlayer(t.world, math.NewVec2(0,100))
 			}
 		}
-	} else if layer.Name == c.CollisionLayer {
-		for y := range t.levelMap.Height {
-			for x := range t.levelMap.Width {
-				tile := layer.Tiles[y*t.levelMap.Width + x]
-				if tile == nil {
-					continue
-				}
-			}
-		}
-	}	
+	} 
+	// collision is handled in the OnEnterScene()
+	// else if layer.Name == c.CollisionLayer {
+	// 	for y := range t.levelMap.Height {
+	// 		for x := range t.levelMap.Width {
+	// 			tile := layer.Tiles[y*t.levelMap.Width + x]
+	// 			if tile == nil {
+	// 				continue
+	// 			}
+	// 		}
+	// 	}
+	// }	
 }
 
 func (t *TestLevelScene) LoadMap(path string) {
